@@ -13,13 +13,7 @@ import kotlin.random.Random
 
 @RestController
 class LoginController {
-
-    object Users : Table() {
-        val user_id = integer("user_id")
-        val login = varchar("login", 32)
-        val password = varchar("password", 32)
-        val token = varchar("token", 32)
-    }
+    class Login constructor(val status: String, val token: String)
 
     @RequestMapping("/account/login")
     public fun login(@RequestParam(value="login") login: String, @RequestParam(value="password") raw_password: String) : Login {

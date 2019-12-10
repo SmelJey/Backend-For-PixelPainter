@@ -13,12 +13,7 @@ import kotlin.math.sin
 
 @RestController
 class RegisterController {
-    object Users : Table() {
-        val user_id = LoginController.Users.integer("user_id")
-        val login = LoginController.Users.varchar("login", 32)
-        val password = LoginController.Users.varchar("password", 32)
-        val token = LoginController.Users.varchar("token", 32)
-    }
+    class Register constructor(val status: String)
 
     @RequestMapping("/account/register")
     public fun register(@RequestParam(value="login") login: String, @RequestParam(value="password") raw_password: String) : Register {
