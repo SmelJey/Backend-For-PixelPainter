@@ -22,6 +22,10 @@ class RegisterController {
 
     @RequestMapping("/account/register")
     public fun register(@RequestParam(value="login") login: String, @RequestParam(value="password") raw_password: String) : Register {
+        if (raw_password.length < 6) {
+            return Register("FAIL")
+        }
+
         var password = raw_password
         password = (sin(password.length / 32.0) * 100.0).toString() + password + "xGhw663rTh12"
         val md = MessageDigest.getInstance("MD5").digest(password.toByteArray())
