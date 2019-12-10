@@ -20,6 +20,8 @@ class CreateController {
             return Create("FAIL", -1)
         }
 
+        // TODO: Add verify for var data on JSON(lib gson)
+
         var artId : Int = -1
         transaction {
             val query = Users.select { Users.token eq token }
