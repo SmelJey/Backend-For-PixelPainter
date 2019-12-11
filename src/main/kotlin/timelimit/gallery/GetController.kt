@@ -20,14 +20,19 @@ class GetController {
         var status = "OK"
         transaction {
             val query = Users.select { Users.token eq token }
-            if (query.count() != 1) {
+            if (query.count() == 1) {
+                val userId = query.iterator().next()[Users.user_id]
+                val res = Gallery.select { not(Gallery.is_private) or (Gallery.user_id eq userId)}.limit(n = count, offset = offset)
+                res.forEach {
+                    arts.add(Art(it[Gallery.art_id], it[Gallery.data], userId == it[Gallery.user_id]))
+                }
+            } else if (query.count() == 0) {
+                val res = Gallery.select { not(Gallery.is_private)}.limit(n = count, offset = offset)
+                res.forEach {
+                    arts.add(Art(it[Gallery.art_id], it[Gallery.data], false))
+                }
+            } else {
                 status = "FAIL"
-                return@transaction
-            }
-            val userId = query.iterator().next()[Users.user_id]
-            val res = Gallery.select { not(Gallery.is_private) or (Gallery.user_id eq userId)}.limit(n = count, offset = offset)
-            res.forEach {
-                arts.add(Art(it[Gallery.art_id], it[Gallery.data], userId == it[Gallery.user_id]))
             }
         }
 
