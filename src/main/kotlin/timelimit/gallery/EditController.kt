@@ -19,9 +19,7 @@ class EditController {
         if (token.length != 32) {
             return Edit("FAIL")
         }
-
-        // TODO: Add verify for var data on JSON(lib gson)
-
+        
         var status = "FAIL"
         transaction {
             val query = Users.select { Users.token eq token }
