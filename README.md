@@ -3,6 +3,7 @@
 ## API consists from groups:
 1. account
 1. gallery
+1. likes
 
 ### Account consists from methods:
 #### 1. login
@@ -38,6 +39,7 @@
 ##### Input(GET):
 1. offset : integer
 1. count : integer
+1. like_order : bool
 1. token : string (length = 32)
 ##### Output:
 1. status(OK, FAIL) : string
@@ -70,3 +72,21 @@ owner = (owner picture == owner token)
 1. status(OK, FAIL, INVALID_TOKEN) : string
 ##### Example:
 ```address_server/gallery/edit?art_id=123&data=data:image/png;base64,...&token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx```
+
+### Likes consists from methods:
+#### 1. add
+##### Input(GET):
+1. art_id : integer (required)
+1. token : string (required)
+##### Output:
+1. status(OK, FAIL, INVALID_TOKEN) : string
+##### Example:
+```address_server/likes/add?art_id=123&token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx```
+#### 1. remove
+##### Input(GET):
+1. art_id : integer (required)
+1. token : string (required) (length = 32)
+##### Output:
+1. status(OK, FAIL, INVALID_TOKEN) : string
+##### Example:
+```address_server/likes/remove?art_id=123&token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx```
