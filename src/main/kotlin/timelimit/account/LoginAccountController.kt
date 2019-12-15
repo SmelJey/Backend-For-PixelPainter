@@ -2,6 +2,7 @@ package timelimit.account
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.joda.time.DateTime
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -12,7 +13,7 @@ import kotlin.math.sin
 import kotlin.random.Random
 
 @RestController
-class LoginController {
+class LoginAccountController {
     class Login constructor(val status: String, val token: String)
 
     @RequestMapping("/account/login")
@@ -44,10 +45,11 @@ class LoginController {
             status = false
             transaction {
                 if (Users.select{Users.token eq token}.count() == 0) {
-                    status = true
                     Users.update(where = {Users.login eq login}) {
                         it[Users.token] = token
+                        it[Users.token_time] = DateTime.now().plusDays(1)
                     }
+                    status = true
                 } else {
                     // TODO: Generate other token
                 }

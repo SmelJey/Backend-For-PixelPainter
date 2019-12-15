@@ -16,26 +16,29 @@ class RegisterController {
     class Register constructor(val status: String)
 
     @RequestMapping("/account/register")
-    public fun register(@RequestParam(value="login") login: String, @RequestParam(value="password") raw_password: String) : Register {
+    public fun register(@RequestParam(value="login") login: String, @RequestParam(value = "email") email: String, @RequestParam(value="password") raw_password: String) : Register {
         if (raw_password.length < 6) {
             return Register("FAIL")
         }
-
         var password = raw_password
         password = (sin(password.length / 32.0) * 100.0).toString() + password + "xGhw663rTh12"
         val md = MessageDigest.getInstance("MD5").digest(password.toByteArray())
         password = BigInteger(1, md).toString(16).padStart(32, '0')
 
-        var status = "OK"
+        if (!org.apache.commons.validator.routines.EmailValidator.getInstance().isValid(email)) {
+            return Register("FAIL")
+        }
+
+        var status = "FAIL"
 
         transaction {
             if (Users.select { Users.login eq login }.limit(1).count() == 0) {
                 Users.insert {
                     it[Users.login] = login
                     it[Users.password] = password
+                    it[Users.email] = email
                 }
-            } else {
-                status = "FAIL"
+                status = "OK"
             }
         }
 

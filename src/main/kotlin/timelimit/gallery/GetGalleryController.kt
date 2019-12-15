@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 import timelimit.account.Users
 
 @RestController
-class GetController {
+class GetGalleryController {
     class Art constructor(val art_id : Int, val data: String, val owner: Boolean)
     class Get constructor(val status : String, val items : Array<Art>)
 

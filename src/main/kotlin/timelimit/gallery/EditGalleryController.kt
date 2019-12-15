@@ -5,13 +5,14 @@ import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
+import org.joda.time.DateTime
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import timelimit.account.Users
 
 @RestController
-class EditController {
+class EditGalleryController {
     class Edit constructor(val status: String)
 
     @RequestMapping("/gallery/edit")
@@ -26,7 +27,13 @@ class EditController {
             if (query.count() != 1) {
                 return@transaction
             }
-            val userId = query.iterator().next()[Users.user_id]
+            val user = query.iterator().next()
+            val userId = user[Users.user_id]
+            val tokenTime = user[Users.token_time]
+            if (tokenTime < DateTime.now()) {
+                status = "INVALID_TOKEN"
+                return@transaction
+            }
 
             if (Gallery.select { (Gallery.user_id eq userId) and (Gallery.art_id eq art_id) }.count() != 1) {
                 return@transaction
