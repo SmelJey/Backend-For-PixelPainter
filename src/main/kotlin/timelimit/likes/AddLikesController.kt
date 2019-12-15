@@ -1,10 +1,7 @@
 package timelimit.likes
 
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 import org.joda.time.DateTime
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -37,7 +34,11 @@ class AddLikesController {
                 return@transaction
             }
 
-            if (Likes.select { (Likes.art_id eq art_id) and (Likes.user_id eq userId) }.count() == 0) {
+            if (Gallery.select { Gallery.art_id eq art_id }.count() != 0 && Likes.select { (Likes.art_id eq art_id) and (Likes.user_id eq userId) }.count() == 0) {
+                if (Gallery.select { (Gallery.art_id eq art_id) and (Gallery.is_private eq true) and not(Gallery.user_id eq userId) }.count() != 0) {
+                    return@transaction
+                }
+
                 Likes.insert {
                     it[Likes.art_id] = art_id
                     it[Likes.user_id] = userId
