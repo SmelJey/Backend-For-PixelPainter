@@ -12,7 +12,7 @@ import java.security.MessageDigest
 import kotlin.math.sin
 
 @RestController
-class RegisterController {
+class RegisterAccountController {
     class Register constructor(val status: String)
 
     @RequestMapping("/account/register")

@@ -31,8 +31,8 @@ class LoginAccountController {
         transaction {
             val user = Users.select {(Users.login eq login) and (Users.password eq password)}.limit(1).toList()
             if (user.size == 1) {
-                status = true
                 token = login + user[0][Users.user_id] + password + Random.nextInt()
+                status = true
             }
         }
 
