@@ -2,6 +2,7 @@ package timelimit.account
 
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.web.bind.annotation.RequestMapping
@@ -32,7 +33,7 @@ class RegisterAccountController {
         var status = "FAIL"
 
         transaction {
-            if (Users.select { Users.login eq login }.limit(1).count() == 0) {
+            if (Users.select { (Users.login eq login) or (Users.email eq email) }.limit(1).count() == 0) {
                 Users.insert {
                     it[Users.login] = login
                     it[Users.password] = password
