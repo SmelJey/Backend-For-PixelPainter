@@ -5,11 +5,13 @@ import org.jetbrains.exposed.sql.not
 import org.jetbrains.exposed.sql.or
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import timelimit.account.Users
 
+@CrossOrigin(origins = ["http://localhost:8081"], maxAge = 3600)
 @RestController
 class GetGalleryController {
     class Art constructor(val art_id : Int, val data: String, val owner: Boolean)

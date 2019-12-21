@@ -6,11 +6,13 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import timelimit.account.Users
 
+@CrossOrigin(origins = ["http://localhost:8081"], maxAge = 3600)
 @RestController
 class CreateGalleryController {
     class Create constructor(val status: String, val art_id: Int)
