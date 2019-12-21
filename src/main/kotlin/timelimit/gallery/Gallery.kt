@@ -8,4 +8,5 @@ object Gallery : Table() {
     val user_id = integer("user_id") references Users.user_id
     val data = text("data")
     val is_private = bool("is_private")
+    val likes = integer("likes")
 }

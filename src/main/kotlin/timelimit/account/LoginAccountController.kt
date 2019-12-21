@@ -2,6 +2,7 @@ package timelimit.account
 
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.joda.time.DateTime
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -14,7 +15,7 @@ import kotlin.random.Random
 
 @CrossOrigin(origins = ["http://localhost:8081"], maxAge = 3600)
 @RestController
-class LoginController {
+class LoginAccountController {
     class Login constructor(val status: String, val token: String)
 
     @RequestMapping("/account/login")
@@ -32,8 +33,8 @@ class LoginController {
         transaction {
             val user = Users.select {(Users.login eq login) and (Users.password eq password)}.limit(1).toList()
             if (user.size == 1) {
-                status = true
                 token = login + user[0][Users.user_id] + password + Random.nextInt()
+                status = true
             }
         }
 
@@ -46,10 +47,11 @@ class LoginController {
             status = false
             transaction {
                 if (Users.select{Users.token eq token}.count() == 0) {
-                    status = true
                     Users.update(where = {Users.login eq login}) {
                         it[Users.token] = token
+                        it[Users.token_time] = DateTime.now().plusDays(1)
                     }
+                    status = true
                 } else {
                     // TODO: Generate other token
                 }

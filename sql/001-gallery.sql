@@ -7,6 +7,7 @@ create table public.gallery
 		constraint gallery_user_id_fkey
 			references public.users,
 	data text not null,
-	is_private boolean not null
+	is_private boolean not null,
+	likes integer default 0 not null
 );
 
