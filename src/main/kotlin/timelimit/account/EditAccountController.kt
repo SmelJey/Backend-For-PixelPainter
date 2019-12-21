@@ -40,7 +40,7 @@ class EditAccountController {
             rawValue = BigInteger(1, md).toString(16).padStart(32, '0')
         } else if (field == "age" && value.toIntOrNull() == null) {
             return Edit("FAIL")
-        } else if (field == "email" && !org.apache.commons.validator.routines.EmailValidator.getInstance().isValid(value)) {
+        } else if (field == "email" && (value.length > 64 || !org.apache.commons.validator.routines.EmailValidator.getInstance().isValid(value))) {
             return Edit("FAIL")
         } else if (field == "vk_profile") {
             if (!org.apache.commons.validator.routines.UrlValidator.getInstance().isValid(value)) {
