@@ -20,7 +20,13 @@ class LoginAccountController {
 
     @RequestMapping("/account/login")
     public fun login(@RequestParam(value="login") login: String, @RequestParam(value="password") raw_password: String) : Login {
-        if (raw_password.length < 6) {
+        login.forEach {
+            if (it !in 'a'..'z' && it !in 'A'..'Z' && it !in '0'..'9') {
+                return Login("FAIL", "")
+            }
+        }
+
+        if (raw_password.length < 6 || raw_password.length > 128 || login.length < 6 || login.length > 32) {
             return Login("FAIL", "")
         }
         var password = raw_password

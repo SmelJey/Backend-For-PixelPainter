@@ -8,8 +8,8 @@
 ### Account consists from methods:
 #### 1. login
 ##### Input(GET): 
-1. login : string (required) (max length = 32)
-1. password(non-hashed) : string (required) (min length = 6)
+1. login : string (required) (min length = 6; max length = 32; consists only chars a..z + A..Z + 0..9)
+1. password(non-hashed) : string (required) (min length = 6; max length = 128)
 ##### Output: 
 1. status(OK, FAIL) : string 
 1. token : string (if OK return string length = 32 else empty string)
@@ -17,9 +17,9 @@
 ```address_server/account/login?login=some_login&password=some_password```
 #### 2. register
 ##### Input(GET): 
-1. login : string (required) (max length = 32)
-1. email : string (required)
-1. password(non-hashed) : string (required) (min length = 6)
+1. login : string (required) (min length = 6; max length = 32; consists only chars a..z + A..Z + 0..9)
+1. email : string (required) (max length = 64)
+1. password(non-hashed) : string (required) (min length = 6; max length = 128)
 ##### Output:
 1. status(OK, FAIL) : string
 ##### Example:

@@ -20,7 +20,13 @@ class RegisterAccountController {
 
     @RequestMapping("/account/register")
     public fun register(@RequestParam(value="login") login: String, @RequestParam(value = "email") email: String, @RequestParam(value="password") raw_password: String) : Register {
-        if (raw_password.length < 6 || login.length > 32 || email.length > 64) {
+        login.forEach {
+            if (it !in 'a'..'z' && it !in 'A'..'Z' && it !in '0'..'9') {
+                return Register("FAIL")
+            }
+        }
+
+        if (raw_password.length < 6 || raw_password.length > 128 || login.length < 6 || login.length > 32 || email.length > 64) {
             return Register("FAIL")
         }
         var password = raw_password
