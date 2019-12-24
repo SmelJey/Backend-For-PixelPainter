@@ -33,6 +33,20 @@
 1. status(OK, FAIL, INVALID_TOKEN) : string
 ##### Example:
 ```address_server/account/edit?field=email&value=test@test.ru&token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx```
+#### 3. get
+##### Input(GET):
+1. token : string (required) (length = 32)
+##### Output:
+1. status(OK, FAIL, INVALID_TOKEN) : string
+1. login if status == OK else empty string
+1. email if status == OK else empty string
+1. first_name if status == OK else empty string
+1. second_name if status == OK else empty string
+1. age if status == OK else 0
+1. vk_profile if status == OK else empty string
+1. country if status == OK else empty string
+##### Example:
+```address_server/account/get?token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx```
 
 ### Gallery consists from methods:
 #### 1. get

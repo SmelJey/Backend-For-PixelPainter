@@ -33,7 +33,7 @@ class RemoveLikesController {
             }
             val user = query.iterator().next()
             val userId = user[Users.user_id]
-            val tokenTime = user[Users.token_time]
+            val tokenTime = user[Users.token_time] ?: return@transaction
             if (tokenTime < DateTime.now()) {
                 status = "INVALID_TOKEN"
                 return@transaction
