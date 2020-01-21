@@ -1,5 +1,6 @@
 package timelimit.account
 
+import main.kotlin.timelimit.account.ValidatorSQL
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
@@ -53,40 +54,44 @@ class EditAccountController {
         }
 
         var status = "FAIL"
-        transaction {
-            val query = Users.select { Users.token eq token }
-            if (query.count() != 1) {
-                status = "INVALID_TOKEN"
-                return@transaction
-            }
-            val user = query.iterator().next()
-            val userId = user[Users.user_id]
-            val tokenTime = user[Users.token_time] ?: return@transaction
-            if (tokenTime < DateTime.now()) {
-                status = "INVALID_TOKEN"
-                return@transaction
-            }
+        if (ValidatorSQL.getInstance().checkLength(field, rawValue)) {
+            transaction {
+                val query = Users.select { Users.token eq token }
+                if (query.count() != 1) {
+                    status = "INVALID_TOKEN"
+                    return@transaction
+                }
+                val user = query.iterator().next()
+                val userId = user[Users.user_id]
+                val tokenTime = user[Users.token_time] ?: return@transaction
+                if (tokenTime < DateTime.now()) {
+                    status = "INVALID_TOKEN"
+                    return@transaction
+                }
 
-            if (Users.update(where = { Users.user_id eq userId }) {
-                    when(field) {
-                        "password" -> {
-                            it[Users.token_time] = DateTime.now().minusDays(1)
-                            it[Users.password] = rawValue
+                if (Users.update(where = { Users.user_id eq userId }) {
+                        when (field) {
+                            "password" -> {
+                                it[Users.token_time] = DateTime.now().minusDays(1)
+                                it[Users.password] = rawValue
+                            }
+                            "email" -> {
+                                it[Users.token_time] = DateTime.now().minusDays(1)
+                                it[Users.email] = rawValue
+                            }
+                            "first_name" -> it[Users.first_name] = rawValue
+                            "second_name" -> it[Users.second_name] = rawValue
+                            "age" -> it[Users.age] = rawValue.toInt()
+                            "vk_profile" -> it[Users.vk_profile] = rawValue
+                            "country" -> it[Users.country] = rawValue
                         }
-                        "email" -> {
-                            it[Users.token_time] = DateTime.now().minusDays(1)
-                            it[Users.email] = rawValue
-                        }
-                        "first_name" -> it[Users.first_name] = rawValue
-                        "second_name" -> it[Users.second_name] = rawValue
-                        "age" -> it[Users.age] = rawValue.toInt()
-                        "vk_profile" -> it[Users.vk_profile] = rawValue
-                        "country" -> it[Users.country] = rawValue
-                    }
-                } != 1) {
-                return@transaction
+                    } != 1) {
+                    return@transaction
+                }
+                status = "OK"
             }
-            status = "OK"
+        } else {
+            status = "MAX_LENGTH"
         }
 
         return Edit(status)

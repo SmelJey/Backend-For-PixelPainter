@@ -1,6 +1,5 @@
 package timelimit.account
 
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
@@ -14,6 +13,10 @@ class CheckTokenAccountController {
 
     @RequestMapping("/account/check_token")
     fun checkToken(@RequestParam("token") token : String) : CheckToken {
+        if (token.length != 32) {
+            return CheckToken("INVALID_TOKEN")
+        }
+
         var status = "FAIL"
         transaction {
             val query = Users.select { Users.token eq token }

@@ -22,8 +22,8 @@ class GetGalleryController {
         val arts : MutableList<Art> = emptyList<Art>().toMutableList()
         var status = "OK"
         transaction {
-            val query = Users.select { Users.token eq token }
-            if (query.count() == 1) {
+            val query = if (token.length == 32) Users.select { Users.token eq token } else null
+            if (query != null && query.count() == 1) {
                 val userId = query.iterator().next()[Users.user_id]
                 var res = Gallery.select { not(Gallery.is_private) or (Gallery.user_id eq userId)}
                 if (like_order) {
@@ -33,7 +33,7 @@ class GetGalleryController {
                 res.forEach {
                     arts.add(Art(it[Gallery.art_id], it[Gallery.data], userId == it[Gallery.user_id]))
                 }
-            } else if (query.count() == 0) {
+            } else {
                 var res = Gallery.select { not(Gallery.is_private)}.limit(n = count, offset = offset)
                 if (like_order) {
                     res = res.orderBy(Gallery.likes, SortOrder.DESC)
@@ -42,8 +42,6 @@ class GetGalleryController {
                 res.forEach {
                     arts.add(Art(it[Gallery.art_id], it[Gallery.data], false))
                 }
-            } else {
-                status = "FAIL"
             }
         }
 

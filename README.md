@@ -30,7 +30,7 @@
 1. value : string (required)
 1. token : string (required) (length = 32)
 ##### Output:
-1. status(OK, FAIL, INVALID_TOKEN) : string
+1. status(OK, FAIL, INVALID_TOKEN, MAX_LENGTH) : string
 ##### Example:
 ```address_server/account/edit?field=email&value=test@test.ru&token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx```
 #### 4. get
