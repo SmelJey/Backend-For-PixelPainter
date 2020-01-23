@@ -14,7 +14,7 @@ import timelimit.account.Users
 @CrossOrigin(origins = ["http://localhost:8081"], maxAge = 3600)
 @RestController
 class GetGalleryController {
-    class Art constructor(val art_id : Int, val data: String, val owner: Boolean)
+    class Art constructor(val art_id : Int, val data: String, val owner: Boolean, val owner_name: String)
     class Get constructor(val status : String, val items : Array<Art>)
 
     @RequestMapping("/gallery/get")
@@ -25,22 +25,24 @@ class GetGalleryController {
             val query = if (token.length == 32) Users.select { Users.token eq token } else null
             if (query != null && query.count() == 1) {
                 val userId = query.iterator().next()[Users.user_id]
-                var res = Gallery.select { not(Gallery.is_private) or (Gallery.user_id eq userId)}
+                var res = (Gallery innerJoin Users)
+                    .select { not(Gallery.is_private) or (Gallery.user_id eq userId)}
+
                 if (like_order) {
                     res = res.orderBy(Gallery.likes, SortOrder.DESC)
                 }
                 res = res.limit(n = count, offset = offset)
                 res.forEach {
-                    arts.add(Art(it[Gallery.art_id], it[Gallery.data], userId == it[Gallery.user_id]))
+                    arts.add(Art(it[Gallery.art_id], it[Gallery.data], userId == it[Gallery.user_id], it[Users.login]))
                 }
             } else {
-                var res = Gallery.select { not(Gallery.is_private)}.limit(n = count, offset = offset)
+                var res = (Gallery innerJoin Users).select { not(Gallery.is_private)}.limit(n = count, offset = offset)
                 if (like_order) {
                     res = res.orderBy(Gallery.likes, SortOrder.DESC)
                 }
                 res = res.limit(n = count, offset = offset)
                 res.forEach {
-                    arts.add(Art(it[Gallery.art_id], it[Gallery.data], false))
+                    arts.add(Art(it[Gallery.art_id], it[Gallery.data], false, it[Users.login]))
                 }
             }
         }
