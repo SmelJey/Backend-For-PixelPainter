@@ -59,10 +59,11 @@
 ### Gallery consists from methods:
 #### 1. get
 ##### Input(GET):
+1. login : string (min length = 6; max length = 32; consists only chars a..z + A..Z + 0..9)
 1. offset : integer
 1. count : integer
 1. like_order : bool
-1. token : string (length = 32)
+1. token : string (length = 32) (backend ignore that param if login is set)
 ##### Output:
 1. status(OK, FAIL) : string
 1. items : array of Art
