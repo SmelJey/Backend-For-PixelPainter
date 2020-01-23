@@ -1,5 +1,6 @@
 package timelimit.account
 
+import main.kotlin.timelimit.account.ValidatorSQL
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
@@ -24,31 +25,53 @@ class EditAccountController {
             return Edit("INVALID_TOKEN")
         }
 
-        if (field !in arrayOf("password", "email", "first_name", "second_name", "age", "vk_profile", "country")) {
+        if (' ' in field || ' ' in value) {
             return Edit("FAIL")
         }
 
-        var rawValue = value
+        val fields = field.split(',')
+        val values = value.split(',').toMutableList()
 
-        if (field == "password") {
-            if (value.length < 6) {
+        if (fields.count() == 0 || fields.count() != values.count()) {
+            return Edit("FAIL")
+        }
+
+        for (i in 0 until fields.count()) {
+            if (fields[i] !in arrayOf("password", "email", "first_name", "second_name", "age", "vk_profile", "country")) {
                 return Edit("FAIL")
             }
-            var password = rawValue
-            password = (sin(password.length / 32.0) * 100.0).toString() + password + "xGhw663rTh12"
-            val md = MessageDigest.getInstance("MD5").digest(password.toByteArray())
-            rawValue = BigInteger(1, md).toString(16).padStart(32, '0')
-        } else if (field == "age" && value.toIntOrNull() == null) {
-            return Edit("FAIL")
-        } else if (field == "email" && (value.length > 64 || !org.apache.commons.validator.routines.EmailValidator.getInstance().isValid(value))) {
-            return Edit("FAIL")
-        } else if (field == "vk_profile") {
-            if (!org.apache.commons.validator.routines.UrlValidator.getInstance().isValid(value)) {
+        }
+
+        for (i in 0 until fields.count()) {
+            if (fields[i] == "password") {
+                if (values[i].length < 6) {
+                    return Edit("FAIL")
+                }
+                var password = values[i]
+                password = (sin(password.length / 32.0) * 100.0).toString() + password + "xGhw663rTh12"
+                val md = MessageDigest.getInstance("MD5").digest(password.toByteArray())
+                values[i] = BigInteger(1, md).toString(16).padStart(32, '0')
+            } else if (fields[i] == "age" && values[i].toIntOrNull() == null) {
                 return Edit("FAIL")
+            } else if (fields[i] == "email" && (values[i].length > 64 || !org.apache.commons.validator.routines.EmailValidator.getInstance().isValid(
+                    values[i]
+                ))
+            ) {
+                return Edit("FAIL")
+            } else if (fields[i] == "vk_profile") {
+                if (!org.apache.commons.validator.routines.UrlValidator.getInstance().isValid(values[i])) {
+                    return Edit("FAIL")
+                }
+                val hostname = URI(values[i]).host
+                if (hostname != "vk.com" && hostname != "www.vk.com") {
+                    return Edit("FAIL")
+                }
             }
-            val hostname = URI(value).host
-            if (hostname != "vk.com" && hostname != "www.vk.com") {
-                return Edit("FAIL")
+        }
+
+        for (i in 0 until fields.count()) {
+            if (!ValidatorSQL.getInstance().checkLength(fields[i], values[i])) {
+                return Edit("MAX_LENGTH")
             }
         }
 
@@ -68,20 +91,22 @@ class EditAccountController {
             }
 
             if (Users.update(where = { Users.user_id eq userId }) {
-                    when(field) {
-                        "password" -> {
-                            it[Users.token_time] = DateTime.now().minusDays(1)
-                            it[Users.password] = rawValue
+                    for (i in 0 until fields.count()) {
+                        when (fields[i]) {
+                            "password" -> {
+                                it[Users.token_time] = DateTime.now().minusDays(1)
+                                it[Users.password] = values[i]
+                            }
+                            "email" -> {
+                                it[Users.token_time] = DateTime.now().minusDays(1)
+                                it[Users.email] = values[i]
+                            }
+                            "first_name" -> it[Users.first_name] = values[i]
+                            "second_name" -> it[Users.second_name] = values[i]
+                            "age" -> it[Users.age] = values[i].toInt()
+                            "vk_profile" -> it[Users.vk_profile] = values[i]
+                            "country" -> it[Users.country] = values[i]
                         }
-                        "email" -> {
-                            it[Users.token_time] = DateTime.now().minusDays(1)
-                            it[Users.email] = rawValue
-                        }
-                        "first_name" -> it[Users.first_name] = rawValue
-                        "second_name" -> it[Users.second_name] = rawValue
-                        "age" -> it[Users.age] = rawValue.toInt()
-                        "vk_profile" -> it[Users.vk_profile] = rawValue
-                        "country" -> it[Users.country] = rawValue
                     }
                 } != 1) {
                 return@transaction

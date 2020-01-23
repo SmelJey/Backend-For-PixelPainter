@@ -26,13 +26,14 @@
 ```address_server/account/register?login=some_login&password=some_password```
 #### 3. edit
 ##### Input(GET):
-1. field : string (required) (takes one of the following values: password, email, first_name, second_name, age, vk_profile, country)
-1. value : string (required)
+1. field : string (required) (takes one or more(use comma how separator) of the following values: password, email, first_name, second_name, age, vk_profile, country)
+1. value : string (required) (if fields more than one then use comma how separator)
 1. token : string (required) (length = 32)
 ##### Output:
-1. status(OK, FAIL, INVALID_TOKEN) : string
+1. status(OK, FAIL, INVALID_TOKEN, MAX_LENGTH) : string
 ##### Example:
 ```address_server/account/edit?field=email&value=test@test.ru&token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx```
+```address_server/account/edit?field=first_name,email&value=somename,test@test.ru&token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx```
 #### 4. get
 ##### Input(GET):
 1. token : string (required) (length = 32)
