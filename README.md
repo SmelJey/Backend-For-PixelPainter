@@ -46,6 +46,7 @@
 1. age if status == OK else 0
 1. vk_profile if status == OK else empty string
 1. country if status == OK else empty string
+1. likes if status == OK else 0
 ##### Example:
 ```address_server/account/get?token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx```
 #### 5. check_token
