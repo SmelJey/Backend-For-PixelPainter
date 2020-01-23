@@ -18,7 +18,10 @@ class GetGalleryController {
     class Get constructor(val status : String, val items : Array<Art>)
 
     @RequestMapping("/gallery/get")
-    fun get(@RequestParam(value="like_order", defaultValue = "0") like_order : Boolean, @RequestParam(value = "offset", defaultValue = "0") offset: Int, @RequestParam(value = "count", defaultValue = "50") count: Int, @RequestParam(value = "token") token: String) : Get {
+    fun get(@RequestParam(value="like_order", defaultValue = "0") like_order : Boolean,
+            @RequestParam(value = "offset", defaultValue = "0") offset: Int,
+            @RequestParam(value = "count", defaultValue = "50") count: Int,
+            @RequestParam(value = "token", defaultValue = "") token: String) : Get {
         val arts : MutableList<Art> = emptyList<Art>().toMutableList()
         var status = "OK"
         transaction {
@@ -33,7 +36,8 @@ class GetGalleryController {
                 }
                 res = res.limit(n = count, offset = offset)
                 res.forEach {
-                    arts.add(Art(it[Gallery.art_id], it[Gallery.data], userId == it[Gallery.user_id], it[Users.login]))
+                    arts.add(Art(it[Gallery.art_id], it[Gallery.data],
+                        userId == it[Gallery.user_id], it[Users.login]))
                 }
             } else {
                 var res = (Gallery innerJoin Users).select { not(Gallery.is_private)}.limit(n = count, offset = offset)

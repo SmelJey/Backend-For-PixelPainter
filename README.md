@@ -36,11 +36,11 @@
 ```address_server/account/edit?field=first_name,email&value=somename,test@test.ru&token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx```
 #### 4. get
 ##### Input(GET):
-1. token : string (required) (length = 32)
+1. token OR login : if token string (length = 32) else string (min length = 6; max length = 32; consists only chars a..z + A..Z + 0..9)
 ##### Output:
 1. status(OK, FAIL, INVALID_TOKEN) : string
 1. login if status == OK else empty string
-1. email if status == OK else empty string
+1. email if (status == OK && use token for request) else empty string
 1. first_name if status == OK else empty string
 1. second_name if status == OK else empty string
 1. age if status == OK else 0
@@ -67,7 +67,7 @@
 1. status(OK, FAIL) : string
 1. items : array of Art
 
-Art = {art_id : integer, data : string, owner: bool}
+Art = {art_id : integer, data : string, owner: bool, owner_name: string}
 owner = (owner picture == owner token)
 ##### Examples:
 ```address_server/gallery/get```
