@@ -51,7 +51,7 @@ class EditAccountController {
                 password = (sin(password.length / 32.0) * 100.0).toString() + password + "xGhw663rTh12"
                 val md = MessageDigest.getInstance("MD5").digest(password.toByteArray())
                 values[i] = BigInteger(1, md).toString(16).padStart(32, '0')
-            } else if (fields[i] == "age" && values[i].toIntOrNull() == null) {
+            } else if (fields[i] == "age" && (values[i].toIntOrNull() == null || values[i].toInt() < 0)) {
                 return Edit("FAIL")
             } else if (fields[i] == "email" && (values[i].length > 64 || !org.apache.commons.validator.routines.EmailValidator.getInstance().isValid(
                     values[i]
