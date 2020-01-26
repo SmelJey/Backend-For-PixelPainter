@@ -7,11 +7,14 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import timelimit.account.Users
+import timelimit.likes.Likes
 
 @CrossOrigin(origins = ["http://localhost:8081"], maxAge = 3600)
 @RestController
 class GetGalleryController {
-    class Art constructor(val art_id: Int, val data: String, val owner: Boolean, val owner_name: String, val likes: Int)
+    class Art constructor(val art_id: Int, val data: String,
+                          val owner: Boolean, val owner_name: String,
+                          val likes: Int, val tokenLikedIt: Boolean)
     class Get constructor(val status: String, val items: Array<Art>)
 
     @RequestMapping("/gallery/get")
@@ -27,6 +30,12 @@ class GetGalleryController {
         transaction {
             val userData = if (token.length == 32) Users.select { Users.token eq token }.singleOrNull() else null
             val userId = if (userData != null) userData.getOrNull(Users.user_id) ?: -1 else -1
+            val likedPosts = mutableMapOf<Int, Boolean>()
+            if (userId != -1) {
+                Likes.slice(Likes.art_id).select { Likes.user_id eq userId }.forEach {
+                    likedPosts[it[Likes.art_id]] = true
+                }
+            }
 
             var res = if (login == "") {
                 (Gallery innerJoin Users)
@@ -47,7 +56,7 @@ class GetGalleryController {
                     Art(
                         it[Gallery.art_id], it[Gallery.data],
                         userId == it[Gallery.user_id], it[Users.login],
-                        it[Gallery.likes]
+                        it[Gallery.likes], likedPosts.getOrDefault(it[Gallery.art_id], false)
                     )
                 )
             }
