@@ -25,44 +25,33 @@ class GetGalleryController {
         val arts: MutableList<Art> = emptyList<Art>().toMutableList()
         var status = "OK"
         transaction {
-            val query = if (login == "" && token.length == 32) Users.select { Users.token eq token } else null
-            if (query != null && query.count() == 1) {
-                val userId = query.iterator().next()[Users.user_id]
-                var res = (Gallery innerJoin Users)
+            val userData = if (token.length == 32) Users.select { Users.token eq token }.singleOrNull() else null
+            val userId = if (userData != null) userData.getOrNull(Users.user_id) ?: -1 else -1
+
+            var res = if (login == "") {
+                (Gallery innerJoin Users)
                     .select { not(Gallery.is_private) or (Gallery.user_id eq userId) }
-
-                if (like_order) {
-                    res = res.orderBy(Gallery.likes, SortOrder.DESC)
-                }
-                res = res.limit(n = count, offset = offset)
-                res.forEach {
-                    arts.add(
-                        Art(
-                            it[Gallery.art_id], it[Gallery.data],
-                            userId == it[Gallery.user_id], it[Users.login],
-                            it[Gallery.likes]
-                        )
-                    )
-                }
+                    .limit(n = count, offset = offset)
             } else {
-                var res = if (login == "") {
-                    (Gallery innerJoin Users)
-                        .select { not(Gallery.is_private) }
-                        .limit(n = count, offset = offset)
-                } else {
-                    (Gallery innerJoin Users)
-                        .select { not(Gallery.is_private) and (Users.login eq login) }
-                        .limit(n = count, offset = offset)
-                }
-
-                if (like_order) {
-                    res = res.orderBy(Gallery.likes, SortOrder.DESC)
-                }
-                res = res.limit(n = count, offset = offset)
-                res.forEach {
-                    arts.add(Art(it[Gallery.art_id], it[Gallery.data], false, it[Users.login], it[Gallery.likes]))
-                }
+                (Gallery innerJoin Users)
+                    .select { (not(Gallery.is_private) or (Gallery.user_id eq userId)) and (Users.login eq login) }
+                    .limit(n = count, offset = offset)
             }
+
+            if (like_order) {
+                res = res.orderBy(Gallery.likes, SortOrder.DESC)
+            }
+            res = res.limit(n = count, offset = offset)
+            res.forEach {
+                arts.add(
+                    Art(
+                        it[Gallery.art_id], it[Gallery.data],
+                        userId == it[Gallery.user_id], it[Users.login],
+                        it[Gallery.likes]
+                    )
+                )
+            }
+
         }
 
         return Get(status, arts.toTypedArray())

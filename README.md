@@ -64,7 +64,7 @@
 1. offset : integer
 1. count : integer
 1. like_order : bool
-1. token : string (length = 32) (backend ignore that param if login is set)
+1. token : string (length = 32)
 ##### Output:
 1. status(OK, FAIL) : string
 1. items : array of Art
