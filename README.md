@@ -69,7 +69,7 @@
 1. status(OK, FAIL) : string
 1. items : array of Art
 
-Art = {art_id : integer, data : string, owner: bool, owner_name: string}
+Art = {art_id : integer, data : string, owner: bool, owner_name: string, likes: integer}
 owner = (owner picture == owner token)
 ##### Examples:
 ```address_server/gallery/get```

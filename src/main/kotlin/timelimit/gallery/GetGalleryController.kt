@@ -11,7 +11,7 @@ import timelimit.account.Users
 @CrossOrigin(origins = ["http://localhost:8081"], maxAge = 3600)
 @RestController
 class GetGalleryController {
-    class Art constructor(val art_id: Int, val data: String, val owner: Boolean, val owner_name: String)
+    class Art constructor(val art_id: Int, val data: String, val owner: Boolean, val owner_name: String, val likes: Int)
     class Get constructor(val status: String, val items: Array<Art>)
 
     @RequestMapping("/gallery/get")
@@ -39,7 +39,8 @@ class GetGalleryController {
                     arts.add(
                         Art(
                             it[Gallery.art_id], it[Gallery.data],
-                            userId == it[Gallery.user_id], it[Users.login]
+                            userId == it[Gallery.user_id], it[Users.login],
+                            it[Gallery.likes]
                         )
                     )
                 }
@@ -59,7 +60,7 @@ class GetGalleryController {
                 }
                 res = res.limit(n = count, offset = offset)
                 res.forEach {
-                    arts.add(Art(it[Gallery.art_id], it[Gallery.data], false, it[Users.login]))
+                    arts.add(Art(it[Gallery.art_id], it[Gallery.data], false, it[Users.login], it[Gallery.likes]))
                 }
             }
         }
