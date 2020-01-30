@@ -56,6 +56,13 @@
 1. status(OK, FAIL, INVALID_TOKEN) : string
 ##### Example:
 ```address_server/account/check_token?token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx```
+#### 6. logout
+##### Input(GET): 
+1. token : string
+##### Output: 
+1. status(OK, FAIL, INVALID_TOKEN) : string 
+##### Example:
+```address_server/account/logout?token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx```
 
 ### Gallery consists from methods:
 #### 1. get
