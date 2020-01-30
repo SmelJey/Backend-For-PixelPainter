@@ -25,11 +25,7 @@ class EditAccountController {
             return Edit("INVALID_TOKEN")
         }
 
-        if (' ' in field || ' ' in value) {
-            return Edit("FAIL")
-        }
-
-        val fields = field.split(',')
+        val fields = field.replace(" ", "").split(',')
         val values = value.split(',').toMutableList()
 
         if (fields.count() == 0 || fields.count() != values.count()) {
