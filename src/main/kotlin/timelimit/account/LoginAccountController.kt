@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.math.BigInteger
 import java.security.MessageDigest
-import javax.xml.datatype.DatatypeConstants
 import kotlin.math.sin
 import kotlin.random.Random
 

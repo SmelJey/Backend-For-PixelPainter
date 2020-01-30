@@ -1,6 +1,5 @@
-package main.kotlin.timelimit.account
+package timelimit.account
 
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
@@ -9,9 +8,6 @@ import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import timelimit.account.CheckTokenAccountController
-import timelimit.account.Users
-
 
 @CrossOrigin(origins = ["http://localhost:8081"], maxAge = 3600)
 @RestController
@@ -19,7 +15,7 @@ class LogoutAccountController {
     class Logout constructor(val status: String)
 
     @RequestMapping("/account/logout")
-    fun logout(@RequestParam("field") token: String) : Logout {
+    public fun logout(@RequestParam("token") token: String) : Logout {
         if (token.length != 32) {
             return Logout("INVALID_TOKEN")
         }
