@@ -40,10 +40,12 @@ class GetGalleryController {
             var res = if (login == "") {
                 (Gallery innerJoin Users)
                     .select { not(Gallery.is_private) or (Gallery.user_id eq userId) }
+                    .orderBy(Gallery.art_id, SortOrder.DESC)
                     .limit(n = count, offset = offset)
             } else {
                 (Gallery innerJoin Users)
                     .select { (not(Gallery.is_private) or (Gallery.user_id eq userId)) and (Users.login eq login) }
+                    .orderBy(Gallery.art_id, SortOrder.DESC)
                     .limit(n = count, offset = offset)
             }
 
