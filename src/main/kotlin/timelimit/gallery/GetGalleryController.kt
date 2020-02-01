@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 import timelimit.account.Users
 import timelimit.likes.Likes
 
-@CrossOrigin(origins = ["http://localhost:8081"], maxAge = 3600)
+@CrossOrigin(origins = ["http://5.63.159.185:8081"], maxAge = 3600)
 @RestController
 class GetGalleryController {
     class Art constructor(val art_id: Int, val data: String,

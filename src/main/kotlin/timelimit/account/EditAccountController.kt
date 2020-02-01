@@ -14,7 +14,7 @@ import java.net.URI
 import java.security.MessageDigest
 import kotlin.math.sin
 
-@CrossOrigin(origins = ["http://localhost:8081"], maxAge = 3600)
+@CrossOrigin(origins = ["http://5.63.159.185:8081"], maxAge = 3600)
 @RestController
 class EditAccountController {
     class Edit constructor(val status: String)

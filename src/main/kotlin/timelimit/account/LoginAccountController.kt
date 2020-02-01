@@ -12,7 +12,7 @@ import java.security.MessageDigest
 import kotlin.math.sin
 import kotlin.random.Random
 
-@CrossOrigin(origins = ["http://localhost:8081"], maxAge = 3600)
+@CrossOrigin(origins = ["http://5.63.159.185:8081"])
 @RestController
 class LoginAccountController {
     class Login constructor(val status: String, val token: String)

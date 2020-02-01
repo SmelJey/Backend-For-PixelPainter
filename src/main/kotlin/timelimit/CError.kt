@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpServletResponse
 
-@CrossOrigin(origins = ["http://localhost:8081"], maxAge = 3600)
+@CrossOrigin(origins = ["http://5.63.159.185:8081"], maxAge = 3600)
 @RestController
 class CError : ErrorController {
     class Error constructor(val status: String, val type_error: Int)
