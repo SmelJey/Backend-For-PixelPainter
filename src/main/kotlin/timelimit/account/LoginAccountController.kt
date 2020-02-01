@@ -25,7 +25,7 @@ class LoginAccountController {
             }
         }
 
-        if (raw_password.length < 6 || raw_password.length > 128 || login.length < 6 || login.length > 32) {
+        if (raw_password.length < 6 || raw_password.length > 128 || login.isEmpty() || login.length > 32) {
             return Login("FAIL", "")
         }
         var password = raw_password

@@ -26,7 +26,7 @@ class RegisterAccountController {
             }
         }
 
-        if (raw_password.length < 6 || raw_password.length > 128 || login.length < 6 || login.length > 32 || email.length > 64) {
+        if (raw_password.length < 6 || raw_password.length > 128 || login.isEmpty() || login.length > 32 || email.length > 64) {
             return Register("FAIL")
         }
         var password = raw_password
